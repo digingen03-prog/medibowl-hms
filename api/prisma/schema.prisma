@@ -1,0 +1,199 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  RECEPTIONIST
+  DOCTOR
+  DOCTOR_ASSISTANT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum VisitStatus {
+  WAITING
+  CONSULTED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  UPI
+  CARD
+  OTHER
+}
+
+enum PaymentStatus {
+  PAID
+  PARTIALLY_PAID
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  username     String?  @unique
+  passwordHash String
+  role         Role
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  doctorProfile            Doctor?
+  registeredVisits         PatientVisit[] @relation("RegisteredBy")
+  consultedVisits          PatientVisit[] @relation("ConsultedBy")
+  consultationsAsAssistant Consultation[] @relation("AssistantConsultations")
+  paymentsCollected        Payment[]      @relation("CollectedBy")
+  auditLogs                AuditLog[]
+
+  @@map("users")
+}
+
+model Doctor {
+  id                     String   @id @default(uuid())
+  userId                 String   @unique
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization         String?  @default("General Physician")
+  defaultConsultationFee Decimal  @default(500.00) @db.Decimal(10, 2)
+  isActive               Boolean  @default(true)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  visits        PatientVisit[]
+  consultations Consultation[]
+
+  @@map("doctors")
+}
+
+model Patient {
+  id               String    @id @default(uuid())
+  patientNumber    String    @unique
+  fullName         String
+  age              Int
+  dateOfBirth      DateTime?
+  gender           Gender
+  mobileNumber     String
+  address          String?
+  emergencyContact String?
+  remarks          String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  visits PatientVisit[]
+
+  @@index([mobileNumber])
+  @@index([fullName])
+  @@map("patients")
+}
+
+model PatientVisit {
+  id             String      @id @default(uuid())
+  visitNumber    String      @unique
+  patientId      String
+  patient        Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorId       String
+  doctor         Doctor      @relation(fields: [doctorId], references: [id])
+  queueNumber    Int
+  visitDate      DateTime    @default(now())
+  status         VisitStatus @default(WAITING)
+  registeredById String
+  registeredBy   User        @relation("RegisteredBy", fields: [registeredById], references: [id])
+  consultedById  String?
+  consultedBy    User?       @relation("ConsultedBy", fields: [consultedById], references: [id])
+  consultedAt    DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  consultation Consultation?
+  payments     Payment[]
+
+  @@index([doctorId, status])
+  @@index([status])
+  @@index([visitDate])
+  @@map("patient_visits")
+}
+
+model Consultation {
+  id              String   @id @default(uuid())
+  visitId         String   @unique
+  visit           PatientVisit @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  doctorId        String
+  doctor          Doctor   @relation(fields: [doctorId], references: [id])
+  assistantId     String?
+  assistant       User?    @relation("AssistantConsultations", fields: [assistantId], references: [id])
+  consultationFee Decimal  @default(0.00) @db.Decimal(10, 2)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  payments Payment[]
+
+  @@map("consultations")
+}
+
+model Payment {
+  id                   String        @id @default(uuid())
+  visitId              String
+  visit                PatientVisit  @relation(fields: [visitId], references: [id], onDelete: Cascade)
+  consultationId       String
+  consultation         Consultation  @relation(fields: [consultationId], references: [id], onDelete: Cascade)
+  amountReceived       Decimal       @db.Decimal(10, 2)
+  paymentMethod        PaymentMethod
+  paymentStatus        PaymentStatus
+  transactionReference String?
+  collectedById        String
+  collectedBy          User          @relation("CollectedBy", fields: [collectedById], references: [id])
+  collectedAt          DateTime      @default(now())
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  @@index([visitId])
+  @@index([collectedAt])
+  @@map("payments")
+}
+
+model AuditLog {
+  id             String   @id @default(uuid())
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action         String
+  entityType     String
+  entityId       String
+  previousValues Json?
+  newValues      Json?
+  ipAddress      String?
+  createdAt      DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model DailyQueueSequence {
+  dateKey   String   @id // Format: YYYY-MM-DD
+  lastQueue Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@map("daily_queue_sequences")
+}
+
+model SystemSequence {
+  sequenceName String   @id // e.g. "VISIT_SEQ_2026", "PATIENT_SEQ_2026"
+  lastValue    Int      @default(0)
+  updatedAt    DateTime @updatedAt
+
+  @@map("system_sequences")
+}
+
