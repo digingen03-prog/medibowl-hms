@@ -9,15 +9,10 @@ import {
   RiEyeLine,
   RiEyeOffLine,
   RiArrowRightLine,
-  RiShieldCheckLine,
-  RiShieldUserLine,
   RiUserAddLine,
-  RiStethoscopeLine,
-  RiBankCardLine,
   RiPulseLine,
   RiErrorWarningLine,
   RiLock2Line,
-  RiCheckLine,
   RiTimeLine,
   RiMoneyRupeeCircleLine,
 } from 'react-icons/ri';
@@ -28,7 +23,6 @@ export default function LoginPage() {
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -45,48 +39,6 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-
-  const fillDemo = (roleKey: string, email: string) => {
-    setSelectedRole(roleKey);
-    setEmailOrUsername(email);
-    setPassword('Password@123');
-    setError(null);
-  };
-
-  const demoRoles = [
-    {
-      key: 'ADMIN',
-      title: 'Administrator',
-      scope: 'Full Governance & Reports',
-      email: 'admin@hospital.com',
-      icon: RiShieldUserLine,
-      color: 'text-purple-600 bg-purple-50 border-purple-200/80',
-    },
-    {
-      key: 'RECEPTIONIST',
-      title: 'Receptionist',
-      scope: 'Patient Intake & Token Queue',
-      email: 'receptionist@hospital.com',
-      icon: RiUserAddLine,
-      color: 'text-blue-600 bg-blue-50 border-blue-200/80',
-    },
-    {
-      key: 'DOCTOR',
-      title: 'Doctor',
-      scope: 'Consultation & Call Queue',
-      email: 'doctor@hospital.com',
-      icon: RiStethoscopeLine,
-      color: 'text-emerald-600 bg-emerald-50 border-emerald-200/80',
-    },
-    {
-      key: 'DOCTOR_ASSISTANT',
-      title: 'Doctor Assistant',
-      scope: 'Fee Billing & Settlement',
-      email: 'assistant@hospital.com',
-      icon: RiBankCardLine,
-      color: 'text-amber-600 bg-amber-50 border-amber-200/80',
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4 sm:p-6 lg:p-10 select-none">
@@ -198,7 +150,7 @@ export default function LoginPage() {
                 Sign in to your workstation
               </h1>
               <p className="text-xs sm:text-sm text-slate-500 mt-1 font-normal">
-                Enter your credentials or choose a quick one-click role below.
+                Enter your authorized credentials to access your hospital workstation.
               </p>
             </div>
 
@@ -224,10 +176,7 @@ export default function LoginPage() {
                     type="text"
                     required
                     value={emailOrUsername}
-                    onChange={(e) => {
-                      setEmailOrUsername(e.target.value);
-                      setSelectedRole(null);
-                    }}
+                    onChange={(e) => setEmailOrUsername(e.target.value)}
                     placeholder="staff@hospital.com or username"
                     className="w-full pl-10 pr-3.5 py-2.5 text-sm bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 text-slate-900 placeholder:text-slate-400 shadow-2xs font-normal transition-colors"
                   />
@@ -246,10 +195,7 @@ export default function LoginPage() {
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setSelectedRole(null);
-                    }}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
                     className="w-full pl-10 pr-11 py-2.5 text-sm bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 text-slate-900 placeholder:text-slate-400 shadow-2xs font-normal transition-colors"
                   />
@@ -280,73 +226,10 @@ export default function LoginPage() {
                 Sign In to Workstation
               </Button>
             </form>
-
-            {/* Quick One-Click Demo Access Cards */}
-            <div className="mt-7 pt-5 border-t border-slate-100">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-1.5">
-                  <RiShieldCheckLine className="w-4 h-4 text-blue-600" />
-                  <span className="text-xs font-bold text-slate-800">One-Click Staff Accounts</span>
-                </div>
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                  Test Credentials
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {demoRoles.map((role) => {
-                  const Icon = role.icon;
-                  const isSelected = selectedRole === role.key;
-
-                  return (
-                    <button
-                      key={role.key}
-                      type="button"
-                      onClick={() => fillDemo(role.key, role.email)}
-                      className={`group p-3 rounded-xl border text-left transition-all duration-150 flex items-center justify-between gap-2.5 cursor-pointer active:scale-[0.985] ${
-                        isSelected
-                          ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20 shadow-xs'
-                          : 'border-slate-200/90 bg-white hover:bg-slate-50/80 hover:border-slate-300 shadow-2xs hover:shadow-xs'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div
-                          className={`w-9 h-9 rounded-lg border flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105 ${role.color}`}
-                        >
-                          <Icon className="w-4.5 h-4.5" />
-                        </div>
-                        <div className="min-w-0">
-                          <div className={`text-xs font-bold truncate transition-colors ${isSelected ? 'text-blue-900' : 'text-slate-800 group-hover:text-blue-600'}`}>
-                            {role.title}
-                          </div>
-                          <div className="text-[10px] text-slate-500 truncate font-normal mt-0.5">
-                            {role.scope}
-                          </div>
-                        </div>
-                      </div>
-
-                      {isSelected ? (
-                        <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs animate-in zoom-in-75 duration-150">
-                          <RiCheckLine className="w-3.5 h-3.5 stroke-[2.5]" />
-                        </div>
-                      ) : (
-                        <div className="w-5 h-5 rounded-full border border-slate-200 group-hover:border-slate-300 flex items-center justify-center shrink-0 transition-colors">
-                          <RiArrowRightLine className="w-3 h-3 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all" />
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <p className="text-[11px] text-slate-400 text-center mt-3 font-normal">
-                Default password for all staff: <span className="font-mono text-slate-700 font-semibold">Password@123</span>
-              </p>
-            </div>
           </div>
 
           {/* Security Compliance Banner */}
-          <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-center gap-2 text-[11px] text-slate-400 text-center">
+          <div className="mt-12 pt-4 border-t border-slate-100 flex items-center justify-center gap-2 text-[11px] text-slate-400 text-center">
             <RiLock2Line className="w-3.5 h-3.5 text-slate-500 shrink-0" />
             <span>Encrypted Healthcare Session • NABH & HIPAA Compliance Standard</span>
           </div>
