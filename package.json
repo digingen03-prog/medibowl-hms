@@ -1,0 +1,18 @@
+{
+  "name": "hospital-management-system",
+  "version": "1.0.0",
+  "description": "Hospital Management System (HMS) - Modular Monolith MVP 1.0",
+  "scripts": {
+    "start:backend": "npm --prefix backend run start:prod",
+    "dev:backend": "npm --prefix backend run start:dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "db:migrate": "npm --prefix backend run prisma:migrate",
+    "db:seed": "npm --prefix backend run seed",
+    "test:acceptance": "node verify_acceptance_tests.mjs"
+  },
+  "keywords": ["hms", "hospital-management-system", "healthcare", "nextjs", "nestjs", "prisma"],
+  "author": "HMS Team",
+  "license": "UNLICENSED"
+}
+
