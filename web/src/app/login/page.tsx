@@ -63,29 +63,27 @@ export default function LoginPage() {
         </div>
 
         {/* Top: Logo & System Indicator */}
-        <div className="relative z-10 flex items-center justify-between">
+        <div className="relative z-10 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl bg-white/95 p-2 shadow-lg backdrop-blur-md flex items-center justify-center border border-white/20">
+            <div className="bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-lg border border-white/20 flex items-center">
               <Image
-                src="/logos/medibowl-emblem.svg"
-                alt="Medibowl Emblem"
-                width={32}
-                height={32}
-                className="w-full h-full object-contain"
+                src="/logos/logo.png"
+                alt="Medibowl Healthcare Logo"
+                width={150}
+                height={43}
+                priority
+                className="h-8 w-auto object-contain"
               />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-white text-lg tracking-tight">Medibowl HMS</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-blue-500/20 text-blue-200 border border-blue-400/30">
-                  CLINICAL OS
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-300 font-medium">Enterprise Healthcare Workstation</p>
+            <div className="hidden sm:block">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-blue-500/20 text-blue-200 border border-blue-400/30">
+                CLINICAL OS
+              </span>
+              <p className="text-[11px] text-slate-300 font-medium mt-0.5">Enterprise Hospital Workstation</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-semibold backdrop-blur-md">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-semibold backdrop-blur-md shrink-0">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -157,23 +155,19 @@ export default function LoginPage() {
         {/* Mobile Header Branding (< 1024px) */}
         <div className="lg:hidden flex items-center justify-between pb-6 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-slate-900 p-2 shadow-xs flex items-center justify-center">
+            <div className="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl shadow-xs flex items-center">
               <Image
-                src="/logos/medibowl-emblem.svg"
-                alt="Medibowl Emblem"
-                width={28}
-                height={28}
-                className="w-full h-full object-contain"
+                src="/logos/logo.png"
+                alt="Medibowl Healthcare Logo"
+                width={120}
+                height={34}
+                priority
+                className="h-6 w-auto object-contain"
               />
             </div>
-            <div>
-              <span className="font-bold text-slate-900 text-base tracking-tight leading-none block">
-                Medibowl HMS
-              </span>
-              <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest mt-0.5 inline-block">
-                Clinical OS
-              </span>
-            </div>
+            <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest px-2 py-0.5 rounded bg-blue-50 border border-blue-100">
+              Clinical OS
+            </span>
           </div>
           <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
             Active
